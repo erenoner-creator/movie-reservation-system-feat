@@ -11,11 +11,11 @@ const PORT = 3000;
 // Trust proxy for accurate req.ip in rate limiter (localhost/IPv6 handling)
 app.set('trust proxy', true);
 
-// Mount admin route BEFORE middleware to ensure signin always works (offline, admin only)
-app.use('/admin', require('./routes/admin'));
-
 // Middleware (rate/headers with JWT bypass)
 app.use(express.json());
+
+// Mount admin route BEFORE middleware to ensure signin always works (offline, admin only)
+app.use('/admin', require('./routes/admin'));
 app.use(rateHeaders);  // First: handles admin JWT bypass (unlimited) + X-RateLimit-* headers for all
 app.use(rateLimiter);  // Then: IP-based limit (bypassed for valid admin token)
 

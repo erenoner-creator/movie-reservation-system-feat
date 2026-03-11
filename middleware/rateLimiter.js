@@ -4,8 +4,16 @@
 // Uses in-memory Map (resets auto); production would use Redis/DB but simple here.
 
 const rateLimitStore = new Map();  // IP -> {count, resetTime}
+const { verifyToken } = require('../utils/jwt');
 
 const rateLimiter = (req, res, next) => {
+  // Admin JWT bypass: skip rate limiting entirely for valid admin tokens
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const payload = verifyToken(authHeader.split(' ')[1]);
+    if (payload && payload.role === 'admin') return next();
+  }
+
   // Improved IP extraction for consistency (handles IPv6 localhost, proxies; ensures single key per local/test IP)
   // Debug: log to terminal for verification (remove in prod)
   let ip = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || 'unknown';
