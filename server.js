@@ -5,24 +5,11 @@ const db = require('./db/database');  // init DB
 const app = express();
 const PORT = 3000;
 
-<<<<<<< HEAD
-// Trust proxy for accurate req.ip in rate limiter (localhost/IPv6 handling)
-app.set('trust proxy', true);
-
-// Middleware (rate/headers with JWT bypass)
-app.use(express.json());
-
-// Mount admin route BEFORE middleware to ensure signin always works (offline, admin only)
-app.use('/admin', require('./routes/admin'));
-app.use(rateHeaders);  // First: handles admin JWT bypass (unlimited) + X-RateLimit-* headers for all
-app.use(rateLimiter);  // Then: IP-based limit (bypassed for valid admin token)
-=======
 // Mount admin route BEFORE middleware
 app.use('/admin', require('./routes/admin'));
 
 // Middleware
 app.use(express.json());
->>>>>>> 694ea62 (feat: Add video showcase script and Serena project configuration,)
 
 // Swagger setup for docs at /docs (scans routes incl /admin)
 const swaggerOptions = {
